@@ -35,13 +35,13 @@ contract EmissionTestExtendLIDO is BaseTest {
   IEACAggregatorProxy constant REWARD_ORACLE =
     IEACAggregatorProxy(AaveV3EthereumLidoAssets.WETH_ORACLE);
 
-  uint256 constant TOTAL_DISTRIBUTION = 80 ether;
+  uint256 constant TOTAL_DISTRIBUTION = 109 ether;
   uint88 constant DURATION_DISTRIBUTION = 14 days;
 
-  address WETH_A_TOKEN_WHALE = 0xC4F5Ee078a1C4DA280330546C29840d45ab32753; // holds ~14% of aWETH
+  address WETH_A_TOKEN_WHALE = 0xf51842eBF4DC1E6f89d74aB0768c670AB04D928B; // holds ~14% of aWETH
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 20612658); // change this when ready
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 20812308); // change this when ready
   }
 
   function test_extendLidoLM() public {
@@ -87,7 +87,7 @@ contract EmissionTestExtendLIDO is BaseTest {
     _testClaimRewardsForWhale(
       WETH_A_TOKEN_WHALE,
       AaveV3EthereumLidoAssets.WETH_A_TOKEN,
-      11.45 ether
+      13.8 ether
     );
   }
 

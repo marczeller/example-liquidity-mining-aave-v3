@@ -19,7 +19,9 @@ test-Avax-LM-rewards :; FOUNDRY_PROFILE=avax forge test -vvv --match-contract Em
 test-lido-rewards :; FOUNDRY_PROFILE=mainnet forge test -vvv --match-contract EmissionTestETHLMETH
 test-arbGHO-rewards :; FOUNDRY_PROFILE=arbitrum forge test -vvv --match-contract EmissionExtensionTestARBLMGHO
 test-base-rewards :; FOUNDRY_PROFILE=base forge test -vvv --match-contract EmissionTestUSDCBase
-test-base-extension :; FOUNDRY_PROFILE=base forge test -vvv --match-contract EmissionTestExtendLIDO
+test-LidoLM-extension :; FOUNDRY_PROFILE=mainnet forge test -vvv --match-contract EmissionTestExtendLIDO
+test-wstETH-lido-rewards :; FOUNDRY_PROFILE=mainnet forge test -vvv --match-contract EmissionTestwstETHLMETHLIDO
+test-arb-gho-rewards :; FOUNDRY_PROFILE=arbitrum forge test -vvv --match-contract ArbitrumCampaignTest
 
 # scripts
 

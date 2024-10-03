@@ -16,7 +16,7 @@ contract EmissionExtensionTestARBLMGHO is BaseTest {
   // E.g. With an emission of 10_000 MATICX tokens during 1 month, an emission of 50% for variableDebtPolWMATIC would be
   // 10_000 * 1e18 * 50% / 30 days in seconds = 1_000 * 1e18 / 2_592_000 = ~ 0.0003858 * 1e18 MATICX per second
 
-  address constant GHO_A_TOKEN = AaveV3ArbitrumAssets.GHO_A_TOKEN;// TODO: hardcoded for now will use lib when address book is updated
+  address constant GHO_V_TOKEN = AaveV3ArbitrumAssets.GHO_V_TOKEN;// TODO: hardcoded for now will use lib when address book is updated
   address constant ARB_ORACLE = AaveV3ArbitrumAssets.ARB_ORACLE;
   address constant ARB = AaveV3ArbitrumAssets.ARB_UNDERLYING;
 
@@ -37,21 +37,21 @@ contract EmissionExtensionTestARBLMGHO is BaseTest {
   address constant EMISSION_ADMIN = 0xac140648435d03f784879cd789130F22Ef588Fcd; // ACI
   address constant REWARD_ASSET = ARB;
 
-  uint256 constant NEW_TOTAL_DISTRIBUTION = 10_400 ether;
-  uint88 constant NEW_DURATION_DISTRIBUTION_END = 15 days;
+  uint256 constant NEW_TOTAL_DISTRIBUTION = 218_700 ether;
+  uint88 constant NEW_DURATION_DISTRIBUTION_END = 42 days;
 
   IEACAggregatorProxy constant REWARD_ORACLE = IEACAggregatorProxy(ARB_ORACLE);
 
 
-  uint256 constant TOTAL_DISTRIBUTION = 10_400 ether; // 80 awETH/14 Days
-  uint88 constant DURATION_DISTRIBUTION = 15 days;
+  uint256 constant TOTAL_DISTRIBUTION = 218_700 ether; // 80 awETH/14 Days
+  uint88 constant DURATION_DISTRIBUTION = 42 days;
   
   // Not needed as ACI is first LP in market
   // address wETHLIDO_WHALE = 0xac140648435d03f784879cd789130F22Ef588Fcd;
-  address GHO_A_TOKEN_WHALE = 0xda39E48523770197EF3CbB70C1bf1cCCF9B4b1E7; 
+  address GHO_V_TOKEN_WHALE = 0x91603dCf1Be1020f2775d109E6DB75E3A7DbE7Cf; 
 
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 247253747); // change this when ready
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 257283703); // change this when ready
   }
 
   function test_setNewEmissionPerSecond() public {
@@ -77,13 +77,13 @@ contract EmissionExtensionTestARBLMGHO is BaseTest {
     );
 
     // Calculate new distribution end (14 days after the initial end)
-    uint32 newDistributionEnd = uint32(block.timestamp + 15 days);
+    uint32 newDistributionEnd = uint32(block.timestamp + 42 days);
 
     vm.startPrank(EMISSION_ADMIN);
 
     // Call setDistributionEnd with single values instead of arrays
     IEmissionManager(AaveV3Arbitrum.EMISSION_MANAGER).setDistributionEnd(
-        GHO_A_TOKEN,
+        GHO_V_TOKEN,
         REWARD_ASSET,
         newDistributionEnd
     );
@@ -92,7 +92,7 @@ contract EmissionExtensionTestARBLMGHO is BaseTest {
         'calldata to execute tx on EMISSION_MANAGER to extend the distribution end from the emissions admin (safe)',
         abi.encodeWithSelector(
             IEmissionManager.setDistributionEnd.selector,
-            GHO_A_TOKEN,
+            GHO_V_TOKEN,
             REWARD_ASSET,
             newDistributionEnd
         )
@@ -101,38 +101,38 @@ contract EmissionExtensionTestARBLMGHO is BaseTest {
     vm.stopPrank();
 
     address[] memory assets = new address[](1);
-    assets[0] = GHO_A_TOKEN;
+    assets[0] = GHO_V_TOKEN;
 
     // claim pending rewards
 
     IAaveIncentivesController(AaveV3Arbitrum.DEFAULT_INCENTIVES_CONTROLLER).claimRewards(
       assets,
       type(uint256).max,
-      GHO_A_TOKEN_WHALE,
+      GHO_V_TOKEN_WHALE,
       REWARD_ASSET
     );
 
-    vm.warp(block.timestamp + 15 days);
+    vm.warp(block.timestamp + 42 days);
 
     
 
-    uint256 balanceBefore = IERC20(REWARD_ASSET).balanceOf(GHO_A_TOKEN_WHALE);
+    uint256 balanceBefore = IERC20(REWARD_ASSET).balanceOf(GHO_V_TOKEN_WHALE);
 
-    vm.startPrank(GHO_A_TOKEN_WHALE);
+    vm.startPrank(GHO_V_TOKEN_WHALE);
 
     IAaveIncentivesController(AaveV3Arbitrum.DEFAULT_INCENTIVES_CONTROLLER).claimRewards(
       assets,
       type(uint256).max,
-      GHO_A_TOKEN_WHALE,
+      GHO_V_TOKEN_WHALE,
       REWARD_ASSET
     );
 
     vm.stopPrank();
 
-    uint256 balanceAfter = IERC20(REWARD_ASSET).balanceOf(GHO_A_TOKEN_WHALE);
+    uint256 balanceAfter = IERC20(REWARD_ASSET).balanceOf(GHO_V_TOKEN_WHALE);
 
     // Approx estimated rewards with current emission in 1 month, considering the new emissions per second set.
-    uint256 deviationAccepted = 14_600 ether;
+    uint256 deviationAccepted = 35_000 ether;
     assertApproxEqAbs(
       balanceBefore,
       balanceAfter,
@@ -149,24 +149,24 @@ contract EmissionExtensionTestARBLMGHO is BaseTest {
     uint88[] memory newEmissionsPerSecond = new uint88[](1);
     newEmissionsPerSecond[0] = _toUint88(NEW_TOTAL_DISTRIBUTION / DURATION_DISTRIBUTION);
 
-    newEmissionPerAsset.asset = GHO_A_TOKEN;
+    newEmissionPerAsset.asset = GHO_V_TOKEN;
     newEmissionPerAsset.rewards = rewards;
     newEmissionPerAsset.newEmissionsPerSecond = newEmissionsPerSecond;
 
     return newEmissionPerAsset;
   }
 
-  function _getNewDistributionEnd() internal view returns (NewDistributionEndPerAsset memory) {
-    NewDistributionEndPerAsset memory newDistributionEndPerAsset;
+  // function _getNewDistributionEnd() internal view returns (NewDistributionEndPerAsset memory) {
+  //   NewDistributionEndPerAsset memory newDistributionEndPerAsset;
 
-    newDistributionEndPerAsset.asset = GHO_A_TOKEN;
-    newDistributionEndPerAsset.reward = REWARD_ASSET;
-    newDistributionEndPerAsset.newDistributionEnd = _toUint32(
-      block.timestamp + NEW_DURATION_DISTRIBUTION_END
-    );
+  //   newDistributionEndPerAsset.asset = GHO_V_TOKEN;
+  //   newDistributionEndPerAsset.reward = REWARD_ASSET;
+  //   newDistributionEndPerAsset.newDistributionEnd = _toUint32(
+  //     block.timestamp + NEW_DURATION_DISTRIBUTION_END
+  //   );
 
-    return newDistributionEndPerAsset;
-  }
+  //   return newDistributionEndPerAsset;
+  // }
 
   function _toUint32(uint256 value) internal pure returns (uint32) {
     require(value <= type(uint32).max, "SafeCast: value doesn't fit in 32 bits");

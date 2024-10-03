@@ -18,6 +18,7 @@ contract EmissionTestwstETHLMETHLIDO is BaseTest {
   // 10_000 * 1e18 * 50% / 30 days in seconds = 1_000 * 1e18 / 2_592_000 = ~ 0.0003858 * 1e18 MATICX per second
 
   address constant wstETH = AaveV3EthereumLidoAssets.wstETH_UNDERLYING;
+  address constant awstETH = AaveV3EthereumLidoAssets.wstETH_A_TOKEN;
   address constant wstETH_ORACLE = AaveV3EthereumLidoAssets.wstETH_ORACLE;
 
 
@@ -39,7 +40,8 @@ contract EmissionTestwstETHLMETHLIDO is BaseTest {
   
   // Not needed as ACI is first LP in market
   // address wETHLIDO_WHALE = 0xac140648435d03f784879cd789130F22Ef588Fcd;
-  address WSTETH_WHALE = 0x3c22ec75ea5D745c78fc84762F7F1E6D82a2c5BF; // big holder
+  address WSTETH_WHALE = 0x3c22ec75ea5D745c78fc84762F7F1E6D82a2c5BF;
+  address awstETH_WHALE = 0x07833EAdF87CD3079da281395f2fBA24b61F90f7; // big holder
 
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 20885695); // change this when ready
@@ -73,7 +75,7 @@ contract EmissionTestwstETHLMETHLIDO is BaseTest {
     IERC20(REWARD_ASSET).transfer(EMISSION_ADMIN, TOTAL_DISTRIBUTION); 
     vm.stopPrank();
 
-    _testClaimRewardsForWhale(WSTETH_WHALE, wstETH, 0.1 ether);
+    _testClaimRewardsForWhale(awstETH_WHALE, wstETH, 0.1 ether);
   }
 
   function _testClaimRewardsForWhale(address whale, address asset, uint256 expectedReward) internal {
@@ -131,7 +133,7 @@ contract EmissionTestwstETHLMETHLIDO is BaseTest {
 
   function _getEmissionsPerAsset() internal pure returns (EmissionPerAsset[] memory) {
     EmissionPerAsset[] memory emissionsPerAsset = new EmissionPerAsset[](1);
-    emissionsPerAsset[0] = EmissionPerAsset({asset: wstETH, emission: 21 ether});
+    emissionsPerAsset[0] = EmissionPerAsset({asset: awstETH, emission: 21 ether});
 
     uint256 totalDistribution;
     for (uint256 i = 0; i < emissionsPerAsset.length; i++) {

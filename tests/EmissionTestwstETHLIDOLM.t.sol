@@ -75,7 +75,7 @@ contract EmissionTestwstETHLMETHLIDO is BaseTest {
     IERC20(REWARD_ASSET).transfer(EMISSION_ADMIN, TOTAL_DISTRIBUTION); 
     vm.stopPrank();
 
-    // _testClaimRewardsForWhale(awstETH_WHALE, wstETH, 6 ether);
+   _testClaimRewardsForWhale(awstETH_WHALE, awstETH, 6.7 ether);
   }
 
   function _testClaimRewardsForWhale(address whale, address asset, uint256 expectedReward) internal {

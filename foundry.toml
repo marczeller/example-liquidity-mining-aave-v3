@@ -10,6 +10,7 @@ remappings = [
     "aave-v3-periphery/=lib/aave-v3-periphery/"
 ]
 fs_permissions = [{access = "write", path = "./reports"}]
+evm_version = 'shanghai'
 
 [rpc_endpoints]
 mainnet = "${RPC_MAINNET}"
